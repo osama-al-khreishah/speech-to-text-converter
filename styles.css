@@ -1,0 +1,158 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 100% 100%;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+}
+
+/* NAV styles */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+}
+
+/* main content spacing for fixed nav */
+body {
+    padding-top: 4rem;
+}
+
+/* transcript styling */
+#transcript {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: left;
+    direction: ltr;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* arabic text styling */
+#transcript.arabic {
+    direction: rtl;
+    text-align: right;
+    font-family: 'Amiri', 'Noto Sans Arabic', 'Arial Unicode MS', sans-serif;
+}
+
+#transcript:empty::before {
+    content: "Your transcribed text will appear here...";
+    color: #9ca3af;
+    font-style: italic;
+}
+
+#transcript.arabic:empty::before {
+    content: "النص المحول سيظهر هنا...";
+}
+
+/* buttons states */
+button:disabled {
+    background-color: #d1d5db !important;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+button:disabled:hover {
+    background-color: #d1d5db !important;
+    transform: none;
+}
+
+/* recording animation */
+.recording {
+    animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    from { opacity: 0.6; }
+    to { opacity: 1; }
+}
+
+/* status styles */
+.status-ready {
+    background-color: #f3f4f6 !important;
+    color: #6b7280 !important;
+}
+
+.status-recording {
+    background-color: #fef2f2 !important;
+    color: #dc2626 !important;
+}
+
+.status-processing {
+    background-color: #fef3c7 !important;
+    color: #d97706 !important;
+}
+
+.status-error {
+    background-color: #fef2f2 !important;
+    color: #dc2626 !important;
+}
+
+/* responsive design with media queries */
+@media (max-width: 640px) {
+    .bg-white\/95 {
+        margin: 1rem;
+    }
+    
+    .flex.space-x-4 {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* mobile nav adjustments */
+    nav .max-w-7xl {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    nav span {
+        font-size: 1.125rem;
+    }
+}
+
+/* custom scrollbar */
+#transcript::-webkit-scrollbar {
+    width: 6px;
+}
+
+#transcript::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+#transcript::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+#transcript::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* smooth transitions */
+button, select, #transcript {
+    transition: all 0.2s ease-in-out;
+}
+
+/* focus styles */
+select:focus, button:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}

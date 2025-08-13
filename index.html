@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text Converter</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-white/90 backdrop-blur-sm shadow-lg border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 p-2 rounded-lg">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">SpeechText Pro</span>
+                </div>
+                <div class="hidden md:flex space-x-4">
+                    <a href="#" class="text-gray-600 hover:text-gray-800 font-semibold">Home</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-800 font-semibold">About</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-800 font-semibold">Contact</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-800 font-semibold">Privacy Policy</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-800 font-semibold">Terms of Service</a>
+                    <a href="#" class="text-gray-600 hover:text-gray-800 font-semibold">Help</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
+            <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 w-full max-w-2xl border border-white/20">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🎤 Speech to Text</h1>
+            <p class="text-gray-600">Convert your speech to text in real-time</p>
+        </div>
+
+        <!-- Language Selection -->
+        <div class="mb-6">
+            <label for="language" class="block text-sm font-semibold text-gray-700 mb-2">Select Language:</label>
+            <select id="language" class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none transition-colors">
+                <option value="en-US">English (US)</option>
+                <option value="ar-SA">العربية (Arabic)</option>
+            </select>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="flex justify-center space-x-4 mb-6">
+            <button id="startBtn" class="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 flex items-center space-x-2 shadow-lg">
+                <span>🎤</span>
+                <span>Start Recording</span>
+            </button>
+            <button id="stopBtn" class="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 flex items-center space-x-2 shadow-lg" disabled>
+                <span>🛑</span>
+                <span>Stop Recording</span>
+            </button>
+            <button id="clearBtn" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 flex items-center space-x-2 shadow-lg">
+                <span>🗑️</span>
+                <span>Clear</span>
+            </button>
+        </div>
+
+        <!-- Status Display -->
+        <div id="status" class="text-center mb-4">
+            <span class="inline-block px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-600">Ready to record</span>
+        </div>
+
+        <!-- Transcript Display -->
+        <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Transcript:</label>
+            <div id="transcript" class="bg-gray-50 border-2 border-gray-200 rounded-lg p-4 min-h-[150px] max-h-[400px] overflow-y-auto text-lg leading-relaxed"></div>
+        </div>
+
+        <!-- Word Count and Actions -->
+        <div class="flex justify-between items-center">
+            <div id="wordCount" class="text-sm text-gray-500">Words: 0</div>
+            <div class="space-x-2">
+                <button id="copyBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm">
+                    📋 Copy Text
+                </button>
+                <button id="downloadBtn" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 text-sm">
+                    💾 Download
+                </button>
+            </div>
+        </div>
+
+        <!-- Browser Compatibility Warning -->
+        <div id="browserWarning" class="mt-4 p-3 bg-yellow-100 border border-yellow-400 rounded-lg text-yellow-800 text-sm hidden">
+            ⚠️ Your browser may not support speech recognition. Please use Chrome, Edge, or Safari for the best experience.
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

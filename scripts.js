@@ -14,6 +14,9 @@ let recognition = null;
 let isRecording = false;
 let finalTranscript = '';
 let interimTranscript = '';
+let restartAttempts = 0;
+let maxRestartAttempts = 5;
+let recognitionTimeout;
 
 // check browser support and initialize
 function initializeSpeechRecognition() {
@@ -33,7 +36,7 @@ function initializeSpeechRecognition() {
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = languageSelect.value;
-
+    recognition.maxAlternatives = 1;
 // event handlers
     recognition.onstart = handleRecognitionStart;
     recognition.onresult = handleRecognitionResult;
@@ -74,9 +77,12 @@ function handleRecognitionError(event) {
     console.error('Speech recognition error:', event.error);
     
     let errorMessage = 'Recognition error';
+    let shouldRestart = false;
+    
     switch (event.error) {
         case 'no-speech':
-            errorMessage = 'No speech detected';
+            errorMessage = 'No speech detected - continuing...';
+            shouldRestart = true;
             break;
         case 'audio-capture':
             errorMessage = 'Microphone not accessible';
@@ -85,31 +91,73 @@ function handleRecognitionError(event) {
             errorMessage = 'Microphone permission denied';
             break;
         case 'network':
-            errorMessage = 'Network error';
+            errorMessage = 'Network error - retrying...';
+            shouldRestart = true;
+            break;
+        case 'aborted':
+            errorMessage = 'Recognition aborted - restarting...';
+            shouldRestart = true;
             break;
         default:
             errorMessage = `Error: ${event.error}`;
+            shouldRestart = true;
     }
     
-    updateStatus(errorMessage, 'error');
-    stopRecording();
+    updateStatus(errorMessage, shouldRestart ? 'processing' : 'error');
+    
+    if (!shouldRestart) {
+        stopRecording();
+    }
 }
 
 function handleRecognitionEnd() {
-    if (isRecording) {
-        // restart recognition if it was stopped unexpectedly
-        try {
-            recognition.start();
-        } catch (error) {
-            console.log('Recognition restart failed:', error);
-            stopRecording();
+    console.log('Recognition ended, restart attempts:', restartAttempts);
+    
+    if (isRecording && restartAttempts < maxRestartAttempts) {
+        // clear any existing timeout
+        if (recognitionTimeout) {
+            clearTimeout(recognitionTimeout);
         }
+            // attempt to restart recognition after a short delay
+        recognitionTimeout = setTimeout(() => {
+            try {
+                restartAttempts++;
+                console.log('Restarting recognition, attempt:', restartAttempts);
+                recognition.start();
+            } catch (error) {
+                console.log('Failed to restart recognition:', error);
+                if (error.name === 'InvalidStateError') {
+                    // recognition is already starting/started, wait and try again
+                    setTimeout(() => {
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.log('Second restart attempt failed:', e);
+                            handleRecognitionFailure();
+                        }
+                    }, 100);
+                } else {
+                    handleRecognitionFailure();
+                }
+            }
+        }, 100);
+    } else if (isRecording) {
+        handleRecognitionFailure();
     }
+}
+function handleRecognitionFailure() {
+    console.log('Recognition failed after maximum restart attempts');
+    updateStatus('Recognition stopped - click Start to resume', 'error');
+    stopRecording();
+    restartAttempts = 0;
 }
 
 // control Functions
 async function startRecording() {
     try {
+        // Rrset restart attempts
+        restartAttempts = 0;
+        
         // request microphone permission
         await navigator.mediaDevices.getUserMedia({ audio: true });
         
@@ -130,8 +178,16 @@ async function startRecording() {
 }
 
 function stopRecording() {
-    if (recognition && isRecording) {
-        isRecording = false;
+    isRecording = false;
+    restartAttempts = 0;
+    
+    // Clear any pending restart timeout
+    if (recognitionTimeout) {
+        clearTimeout(recognitionTimeout);
+        recognitionTimeout = null;
+    }
+    
+    if (recognition) {
         recognition.stop();
     }
     
@@ -140,7 +196,7 @@ function stopRecording() {
     stopBtn.disabled = true;
     startBtn.classList.remove('recording');
     
-    // finalize transcript
+    // Finalize transcript
     if (interimTranscript) {
         finalTranscript += interimTranscript;
         interimTranscript = '';
@@ -148,6 +204,7 @@ function stopRecording() {
         updateWordCount();
     }
 }
+
 
 function clearTranscript() {
     finalTranscript = '';
